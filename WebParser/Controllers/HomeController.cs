@@ -10,8 +10,23 @@ namespace WebParser.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ParserContext _db;
+
+        public HomeController(ParserContext context)
+        {
+            this._db = context;
+        }
+
         public IActionResult Index()
         {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(Document document)
+        {
+            _db.Documents.Add(document);
+            await _db.SaveChangesAsync();
             return View();
         }
 
