@@ -5,12 +5,18 @@
 @model WebParser.Models.Document
 
 
-<form asp-action="Index" asp-controller="home">
-    <div class="form-group">
-        <label asp-for="Word" class="control-label">Слово</label>
-        <input type="text" asp-for="Word" class="form-control" />
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Send" class="btn btn-default" />
-    </div>
+<form asp-action="Index" asp-controller="Home" method="post" enctype="multipart/form-data">
+    <p>
+        <label></label>
+        <input name="Name" class="form-control" />
+    </p>
+    <p>
+        <label></label>
+        <input name="DocumentFile" type="file" class="form-control" />
+    </p>
+    <p>
+        <input type="submit" value="UpLoad" />
+    </p>
 </form>
+
+
