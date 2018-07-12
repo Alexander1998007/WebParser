@@ -26,7 +26,8 @@ namespace WebParser.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            StringViewModel svm = new StringViewModel { Documents = _db.Documents.Include(s => s.DocumentStrings)};
+            return View(svm);
         }
 
         [HttpPost]

@@ -1,13 +1,13 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "WebParser";
 }
 
-@model WebParser.Models.Document
+@model WebParser.ViewModels.StringViewModel
 
 
 <form asp-action="Index" asp-controller="Home" method="post" enctype="multipart/form-data">
     <p>
-        <label></label>
+        <label>Type word</label>
         <input name="Name" class="form-control" />
     </p>
     <p>
@@ -19,4 +19,27 @@
     </p>
 </form>
 
+<table class="table">
+    @foreach (var doc in Model.Documents)
+    {
+        <tr><td><b>WORD</b></td></tr>
+        <tr>
+            <td>
+                @doc.Word
+            </td>
+        </tr>
+        <tr><td><b>TEXT</b></td><td><b>COUNT_OF_WORDS</b></td></tr>
+        foreach (var str in doc.DocumentStrings)
+        {
+            <tr>
+                <td>
+                    @str.Text
+                </td>
+                <td>
+                    @str.Count
+                </td>
+            </tr>
+        }
+    }
+</table>
 
