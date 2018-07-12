@@ -54,8 +54,8 @@ namespace WebParser.Controllers
                         // Add the lines of the document
                         DocumentString documentString = new DocumentString();
                         documentString.DocumentId = _db.Documents.Where(w => w.Word == word).FirstOrDefault().Id;
-                        documentString.Text = row;
                         documentString.Count = WordCounter(row);
+                        documentString.Text = ReverseString(row);
                         _db.DocumentStrings.Add(documentString);
                         await _db.SaveChangesAsync();
                     }
@@ -68,6 +68,14 @@ namespace WebParser.Controllers
         public int WordCounter(string row)
         {
             return Regex.Matches(row, @"\b" + word + @"\b").Count;
+        }
+
+        // Turning line
+        public string ReverseString(string row)
+        {
+            char[] arr = row.ToCharArray();
+            Array.Reverse(arr);
+            return new string(arr);
         }
 
         public IActionResult About()
