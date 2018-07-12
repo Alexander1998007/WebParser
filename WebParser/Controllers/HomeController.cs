@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,7 @@ namespace WebParser.Controllers
     public class HomeController : Controller
     {
         private readonly ParserContext _db;
-        string line = null;
+        string word = String.Empty;
 
         public HomeController(ParserContext context)
         {
@@ -31,11 +32,13 @@ namespace WebParser.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(DocumentViewModel dvm)
         {
-            Document document = new Document { Word = dvm.Name };
+            word = dvm.Name;
+            var result = string.Empty;
+
+            // Add the document
+            Document document = new Document { Word = word };
             _db.Documents.Add(document);
             await _db.SaveChangesAsync();
-
-            var result = string.Empty;
 
             if (dvm.DocumentFile != null)
             {
@@ -46,17 +49,25 @@ namespace WebParser.Controllers
 
                 foreach (string row in result.Split('.'))
                 {
-                    if (row.IndexOf(dvm.Name.ToString()) != -1)
+                    if (row.IndexOf(word.ToString()) != -1)
                     {
-                    DocumentString documentString = new DocumentString();
-                    documentString.DocumentId = _db.Documents.Where(w => w.Word == dvm.Name).FirstOrDefault().Id;
-                    documentString.Text = row;
-                    _db.DocumentStrings.Add(documentString);
-                    await _db.SaveChangesAsync();
-                    }                  
+                        // Add the lines of the document
+                        DocumentString documentString = new DocumentString();
+                        documentString.DocumentId = _db.Documents.Where(w => w.Word == word).FirstOrDefault().Id;
+                        documentString.Text = row;
+                        documentString.Count = WordCounter(row);
+                        _db.DocumentStrings.Add(documentString);
+                        await _db.SaveChangesAsync();
+                    }
                 }
             }
             return RedirectToAction("Index");
+        }
+
+        // Сounts the number of words given in the sentence
+        public int WordCounter(string row)
+        {
+            return Regex.Matches(row, @"\b" + word + @"\b").Count;
         }
 
         public IActionResult About()
