@@ -4,42 +4,51 @@
 
 @model WebParser.ViewModels.StringViewModel
 
-
+<div class="text-danger" asp-validation-summary="ModelOnly"></div>
 <form asp-action="Index" asp-controller="Home" method="post" enctype="multipart/form-data">
     <p>
         <label>Type word</label>
         <input name="Name" class="form-control" />
     </p>
     <p>
-        <label></label>
+        <label>Select a file</label>
         <input name="DocumentFile" type="file" class="form-control" />
     </p>
     <p>
         <input type="submit" value="UpLoad" />
     </p>
-</form>
 
-<table class="table">
-    @foreach (var doc in Model.Documents)
-    {
-        <tr><td><b>WORD</b></td></tr>
-        <tr>
-            <td>
-                @doc.Word
-            </td>
-        </tr>
-        <tr><td><b>TEXT</b></td><td><b>COUNT_OF_WORDS</b></td></tr>
-        foreach (var str in doc.DocumentStrings)
+    <table class="table">
+        @foreach (var doc in Model.Documents)
         {
+            <tr><td><b>WORD</b></td></tr>
             <tr>
                 <td>
-                    @str.Text
-                </td>
-                <td>
-                    @str.Count
+                    @doc.Word
                 </td>
             </tr>
+            <tr><td><b>TEXT</b></td><td><b>COUNT_OF_WORDS</b></td></tr>
+            foreach (var str in doc.DocumentStrings)
+            {
+                <tr>
+                    <td>
+                        @str.Text
+                    </td>
+                    <td>
+                        @str.Count
+                    </td>
+                </tr>
+            }
         }
-    }
-</table>
+    </table>
+</form>
 
+
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"
+        asp-fallback-src="~/lib/jquery-validation/dist/jquery.validate.min.js"
+        asp-fallback-test="window.jQuery && window.jQuery.validator">
+</script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"
+        asp-fallback-src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"
+        asp-fallback-test="window.jQuery && window.jQuery.validator && window.jQuery.validator.unobtrusive">
+</script>

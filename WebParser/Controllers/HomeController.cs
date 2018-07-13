@@ -31,37 +31,41 @@ namespace WebParser.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(DocumentViewModel dvm)
+        public async Task<IActionResult> Index([Bind("Name, DocumentFile")] DocumentViewModel dvm)
         {
-            word = dvm.Name;
-            var result = string.Empty;
-
-            // Add the document
-            Document document = new Document { Word = word };
-            _db.Documents.Add(document);
-            await _db.SaveChangesAsync();
-
-            if (dvm.DocumentFile != null)
+            if (ModelState.IsValid)
             {
-                using (var reader = new StreamReader(dvm.DocumentFile.OpenReadStream()))
-                {
-                    result = reader.ReadToEnd();
-                }
+                word = dvm.Name;
+                var result = string.Empty;
 
-                foreach (string row in result.Split('.'))
+                // Add the document
+                Document document = new Document {Word = word};
+                _db.Documents.Add(document);
+                await _db.SaveChangesAsync();
+
+                if (dvm.DocumentFile != null)
                 {
-                    if (row.IndexOf(word.ToString()) != -1)
+                    using (var reader = new StreamReader(dvm.DocumentFile.OpenReadStream()))
                     {
-                        // Add the lines of the document
-                        DocumentString documentString = new DocumentString();
-                        documentString.DocumentId = _db.Documents.Where(w => w.Word == word).FirstOrDefault().Id;
-                        documentString.Count = WordCounter(row);
-                        documentString.Text = ReverseString(row);
-                        _db.DocumentStrings.Add(documentString);
-                        await _db.SaveChangesAsync();
+                        result = reader.ReadToEnd();
+                    }
+
+                    foreach (string row in result.Split('.'))
+                    {
+                        if (row.IndexOf(word.ToString()) != -1)
+                        {
+                            // Add the lines of the document
+                            DocumentString documentString = new DocumentString();
+                            documentString.DocumentId = _db.Documents.Where(w => w.Word == word).FirstOrDefault().Id;
+                            documentString.Count = WordCounter(row);
+                            documentString.Text = ReverseString(row);
+                            _db.DocumentStrings.Add(documentString);
+                            await _db.SaveChangesAsync();
+                        }
                     }
                 }
             }
+
             return RedirectToAction("Index");
         }
 
